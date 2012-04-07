@@ -3,6 +3,8 @@ like "favorite songs for last two weeks". Requires Python 3.
 
 Rename «lfm.conf.sample» to «lfm.conf» and set your account name
 
+MUST be run from the directory where the script is located.
+
 Syntax:
      lfm.py update : retrieve your data to the local database
      lfm.py OBJECT [ PERIOD ] : display the top artist/song/album for a given period
