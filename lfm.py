@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-c
-
 import sys, http.client, urllib.request
 import xml.dom.minidom
 import datetime
