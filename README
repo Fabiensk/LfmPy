@@ -1,0 +1,14 @@
+Command line tool to retrieve one Libre.fm history and run simple queries
+like "favorite songs for last two weeks"
+
+Rename «lfm.conf.sample» to «lfm.conf» and set your account name
+
+Syntax:
+     lfm.py update : retrieve your data to the local database
+     lfm.py OBJECT [ PERIOD ] : display the top artist/song/album for a given period
+          OBJECT := { artist | song | album }
+          PERIOD := { day | week | month | year } [ MULTIPLIER ]
+               If not provided, display since the world began
+          MULTIPLIER : number of days/weeks/... (may be a float number)
+     lfm.py alias artist OLD NEW : for the current and future data, consider that
+          OLD and NEW are the same artist, make him appear as NEW in the reports
