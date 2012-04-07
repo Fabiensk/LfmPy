@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
+# Command line tool to retrieve one Libre.fm history and run simple queries
+# like "favorite songs for last two weeks"
+#
+# Rename «lfm.conf.sample» to «lfm.conf» and set your account name
+
 import sys, http.client, urllib.request
 import xml.dom.minidom
 import datetime
