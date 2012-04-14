@@ -1,12 +1,10 @@
 #!/usr/bin/python3
-
-# Command line tool to retrieve one Libre.fm history and run simple queries
-# like "favorite songs for last two weeks"
 #
-# Rename «lfm.conf.sample» to «lfm.conf» and set your account name
+# Copyright 2012 Fabien Shum-King
+# Contact : contact [.at.] fabsk.eu
 
 #******* BEGIN LICENSE BLOCK *****
-# Copyright (C) 2012 Fabien Shum-King
+#
 # Contact : contact [.at.] fabsk.eu
 # 
 # This program is free software: you can redistribute it and/or modify
@@ -23,6 +21,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #**** END LICENSE BLOCK *****
+
+""" Command line tool to retrieve one Libre.fm history and run simple queries
+like "favorite songs for last two weeks"
+Rename «lfm.conf.sample» to «lfm.conf» and set your account name"""
 
 import sys, http.client, urllib.request
 import xml.dom.minidom
