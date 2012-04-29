@@ -20,6 +20,7 @@ MUST be run from the directory where the script is located.
 
 Syntax:
      lfm.py update : retrieve your data to the local database
+     lfm.py recent [ NB_ENTRIES ] : display the recently played songs
      lfm.py OBJECT [ PERIOD ] : display the top artist/song/album for a given period
           OBJECT := { artist | song | album }
           PERIOD := { day | week | month | year } [ MULTIPLIER ]
