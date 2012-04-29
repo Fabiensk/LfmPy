@@ -1,6 +1,19 @@
 Command line tool to retrieve one Libre.fm history and run simple queries
 like "favorite songs for last two weeks". Requires Python 3.
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 Rename «lfm.conf.sample» to «lfm.conf» and set your account name
 
 MUST be run from the directory where the script is located.

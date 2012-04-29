@@ -162,6 +162,30 @@ def update(db, user):
     db.commit()
     db.close()
 
+def recent(db, nb):
+    cur = db.cursor()
+    sql = """
+    select timestamp, artist_name.name, album_name.name, song_name.name
+    from
+    record
+    left join album_name
+    on
+    record.album_id=album_name.album_id
+    left join artist_name
+    on
+    record.artist_id=artist_name.artist_id
+    left join song_name
+    on
+    record.song_id=song_name.song_id
+    order by timestamp desc
+    limit ?
+    """.format(type)
+    # print(sql)
+    cur.execute(sql, (nb,))
+    for rec in cur.fetchall():
+        print(rec)
+    
+
 def do_stats_artist(db, type, d):
     cur = db.cursor()
     sql = """select count(*) as cnt, name
@@ -229,6 +253,7 @@ def syntax(msg=None):
         print("Syntax error: {0}\n".format(msg))
     print("""Syntax:
 \tlfm.py update : retrieve your data to the local database
+\tlfm.py recent [ NB_ENTRIES ] : display the recently played songs
 \tlfm.py OBJECT [ PERIOD ] : display the top artist/song/album for a given period
 \t\tOBJECT := { artist | song | album }
 \t\tPERIOD := { day | week | month | year } [ MULTIPLIER ]
@@ -255,6 +280,14 @@ def main():
         syntax()
     elif cmd=="update":
         update(db, user)
+    elif cmd=="recent":
+        if len(sys.argv)>0:
+            try:
+                recent(db, int(sys.argv[0]))
+            except:
+                syntax("Invalid number")
+        else:
+            recent(db, 25)
     elif cmd=="alias":
         if len(sys.argv)!=3:
             syntax("Not enough arguments for alias")
