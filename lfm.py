@@ -317,7 +317,7 @@ def main():
             elif cmd=="week":
                 d = time.time()-60*60*24*7*mult
             elif cmd=="month":
-                d = time.time()-60*60*24*7*30*mult
+                d = time.time()-60*60*24*30*mult
             elif cmd=="year":
                 d = time.time()-60*60*24*365*mult
             else:
