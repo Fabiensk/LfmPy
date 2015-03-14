@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #
-# Copyright 2012 Fabien Shum-King
+# Copyright 2012 F a b i e n   S h u m - K  i n g
 # Contact : contact [.at.] fabsk.eu
 
 #******* BEGIN LICENSE BLOCK *****
@@ -41,6 +41,8 @@ def get_node_text(node, name):
         return node.getElementsByTagName(name)[0].firstChild.data
     except:
         return None
+
+# Create the tables if needed
 def init_db():
     db = sqlite3.connect(DB_NAME)
     cur = db.cursor()
@@ -54,6 +56,8 @@ def init_db():
     cur.execute("create table artist_name(id INTEGER PRIMARY KEY ASC, name text, artist_id INTEGER, is_default BOOLEAN)")
     cur.execute("create table album_name(id INTEGER PRIMARY KEY ASC, name text, album_id INTEGER, is_default BOOLEAN)")
     cur.execute("create table song_name(id INTEGER PRIMARY KEY ASC, name text, song_id INTEGER, is_default BOOLEAN)")
+    # cannot remember why I put the 'artist_id' and 'album_id' in this table
+    # when there are also available through the 'song_id' and the table 'song'
     cur.execute("""create table record(timestamp INTEGER,
     log_artist TEXT, log_album TEXT, log_song TEXT,
     artist_id INTEGER, album_id INTEGER, song_id INTEGER)""")
@@ -61,6 +65,7 @@ def init_db():
         
     return db
 
+# Get or create an artist by name
 def get_create_artist(db, text):
     if text==None:
         return None
@@ -78,6 +83,7 @@ def get_create_artist(db, text):
     else:
         return rec[0][0]
 
+# Get or create an album/song by name
 def get_create(db, table, text, artist_id):
     if text==None:
         return None
@@ -98,7 +104,7 @@ def get_create(db, table, text, artist_id):
     else:
         return rec[0][0]
     
-    
+# Process a record of the history.
 # return True if new record
 def process_row(db, node):
     # extract fields
@@ -128,6 +134,7 @@ def process_row(db, node):
     cur.close()
     return True
 
+# Process a page of result from the history.
 # return True if some records where new on this page
 def process_page(db, user, page):
     LIMIT = 50
@@ -148,6 +155,8 @@ def process_page(db, user, page):
             has_new = True
     return node!=None and has_new
 
+# Process the history by pages (each one containing a number of entries)
+# Stop when the data of a given number of pages is already in the DB
 def update(db, user):
     MAX_IDENT_PAGES = 2
     page = 1
@@ -162,6 +171,7 @@ def update(db, user):
     db.commit()
     db.close()
 
+# Display the recently played songs.
 def recent(db, nb):
     cur = db.cursor()
     sql = """
@@ -185,8 +195,8 @@ def recent(db, nb):
     for rec in cur.fetchall():
         print(rec)
     
-
-def do_stats_artist(db, type, d):
+# Display the stats by artist for a given period.
+def do_stats_artist(db, type, duration):
     cur = db.cursor()
     sql = """select count(*) as cnt, name
     from record, {0}_name
@@ -197,30 +207,35 @@ def do_stats_artist(db, type, d):
     group by {0}_name.name
     order by cnt desc""".format(type)
     # print(sql)
-    cur.execute(sql, (d,))
+    cur.execute(sql, (duration,))
     for rec in cur.fetchall():
         print(rec)
 
-def do_stats(db, type, d):
+# Display the stats by song or album for a given period.
+def do_stats(db, type, duration):
     cur = db.cursor()
-    sql = """select count(*) as cnt, {0}_name.name, artist_name.name
-    from record, {0}, {0}_name, artist_name
 
-    where {0}.id={0}_name.{0}_id
-    and artist_name.artist_id=record.artist_id
-    and record.{0}_id={0}.id
+    sql = """
+    select cnt, {0}_name.name, artist_name.name from 
+    (select count(*) as cnt, {0}_id
+    from record
+    where timestamp>?
+    group by {0}_id
+    order by cnt desc) rank, {0}, {0}_name, artist_name
+    where rank.{0}_id={0}.id
+    and {0}.id={0}_name.{0}_id
+    and artist_name.artist_id={0}.artist_id
     and {0}_name.is_default=1
     and artist_name.is_default=1
-    and timestamp>?
+    order by cnt desc    """.format(type)
 
-    group by {0}_name.name, artist_name.name
-    order by cnt desc""".format(type)
     # print(sql)
-    cur.execute(sql, (d,))
+    cur.execute(sql, (duration,))
     for rec in cur.fetchall():
         print(rec)
 
-def find_artist_name(db, name):
+# get an artist id by name
+def find_artist_id_by_name(db, name):
     cur = db.cursor()
     sql = "SELECT artist_id from artist_name where name=?;"
     cur.execute(sql, (name, ))
@@ -230,14 +245,14 @@ def find_artist_name(db, name):
         return None
     return rec[0][0]
 
-
+# create an alias for an artist and update the tables
 def alias(db, table, other, new):
     if table!="artist":
         return
-    new_id = find_artist_name(db, new)
+    new_id = find_artist_id_by_name(db, new)
     if new_id==None:
         return
-    other_id = find_artist_name(db, other)
+    other_id = find_artist_id_by_name(db, other)
     if new_id==None:
         return
     cur = db.cursor()
